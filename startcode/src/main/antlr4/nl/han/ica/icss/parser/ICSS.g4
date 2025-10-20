@@ -51,4 +51,3 @@ id_selector : ID_IDENT| CLASS_IDENT| LOWER_IDENT;
 declaration : LOWER_IDENT COLON expression SEMICOLON;
 expression: COLOR| PIXELSIZE| PERCENTAGE;
 //EOF;
-
