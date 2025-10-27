@@ -14,7 +14,7 @@ import java.util.LinkedList;
 
 public class Evaluator implements Transform {
 
-    private IHANLinkedList<HashMap<String, Literal>> variableValues;
+    private LinkedList<HashMap<String, Literal>> variableValues;
 
     public Evaluator() {
         //variableValues = new HANLinkedList<>();
@@ -23,8 +23,36 @@ public class Evaluator implements Transform {
     @Override
     public void apply(AST ast) {
         //variableValues = new HANLinkedList<>();
-
+        applyStylesheet(ast.root);
     }
 
-    
+    private void applyStylesheet(Stylesheet node) {
+        applyStylerule((Stylerule)node.getChildren().get(0));
+    }
+
+    private void applyStylerule(Stylerule node) {
+        for(ASTNode child : node.getChildren()) {
+            if(child instanceof Declaration) {
+                applyDeclaration((Declaration)child);
+            }
+        }
+    }
+
+    private void applyDeclaration(Declaration node) {
+        node.expression = evalExpression(node.expression);
+    }
+//pixelliteral uiteindelijk literal
+    private PixelLiteral evalExpression(Expression expression) {
+        if(expression instanceof PixelLiteral) {
+            return (PixelLiteral)expression;
+        }else {
+            return evalAddOperation((AddOperation)expression);
+        }
+    }
+
+    private PixelLiteral evalAddOperation(AddOperation expression) {
+        PixelLiteral left = evalExpression(expression.lhs);
+        PixelLiteral right = evalExpression(expression.rhs);
+        return new PixelLiteral(left.value+ right.value);
+    }
 }

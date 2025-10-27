@@ -29,9 +29,4 @@ public class HANStack<T> implements IHANStack<T> {
         }
         return list.get(list.size() - 1); // Retourneer het laatste element zonder te verwijderen
     }
-
-    // Optioneel: handig voor testen
-    public boolean isEmpty() {
-        return list.isEmpty();
-    }
 }

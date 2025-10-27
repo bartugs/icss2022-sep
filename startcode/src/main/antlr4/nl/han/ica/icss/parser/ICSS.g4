@@ -45,7 +45,7 @@ ASSIGNMENT_OPERATOR: ':=';
 
 
 //--- PARSER: ---
-stylesheet: stylerule+;
+stylesheet: stylerule*;
 stylerule : id_selector OPEN_BRACE (declaration)* CLOSE_BRACE;
 id_selector : ID_IDENT| CLASS_IDENT| LOWER_IDENT;
 declaration : LOWER_IDENT COLON expression SEMICOLON;
