@@ -49,7 +49,21 @@ stylesheet: variableAssignment* stylerule+ ;
 stylerule : id_selector OPEN_BRACE (declaration)* CLOSE_BRACE;
 id_selector : ID_IDENT| CLASS_IDENT| LOWER_IDENT;
 declaration : LOWER_IDENT COLON expression SEMICOLON;
-expression: COLOR| PIXELSIZE| PERCENTAGE| SCALAR| TRUE| FALSE| variableReference;
+expression
+    : expression MUL expression       # MulExpr
+    | expression PLUS expression      # AddExpr
+    | expression MIN expression       # SubExpr
+    | literal                         # LitExpr
+    | variableReference                # VarRefExpr
+    ;
+literal
+    : PIXELSIZE                        # PixelLiteral
+    | PERCENTAGE                       # PercentageLiteral
+    | SCALAR                           # ScalarLiteral
+    | COLOR                            # ColorLiteral
+    | TRUE                             # TrueLiteral
+    | FALSE                            # FalseLiteral
+    ;
 variableAssignment: variableReference ASSIGNMENT_OPERATOR  expression SEMICOLON;
 variableReference:CAPITAL_IDENT;
 //EOF;
