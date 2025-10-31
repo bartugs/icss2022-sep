@@ -51,6 +51,8 @@ public class Checker {
                 checkVariableAssignment((VariableAssignment) child);
             }else if (child instanceof Declaration) {
                 checkDeclaration((Declaration) child);
+            }else if (child instanceof IfClause) {
+                checkIfClause((IfClause) child);
             }
         }
         variableTypes.pop();
@@ -71,6 +73,37 @@ public class Checker {
         }else{
             declaration.setError("Property '" + propertyName + "' is niet toegestaan in ICSS.");
         }
+    }
+
+    private void checkIfClause(IfClause ifClause) {
+        ExpressionType conditionType = getExpressionType(ifClause.conditionalExpression);
+        if (conditionType != ExpressionType.BOOL) {
+            ifClause.setError("If-conditie moet een BOOLEAN zijn, maar kreeg " + conditionType);
+        }
+
+        // Nieuwe scope voor de if-body
+        variableTypes.push(new HashMap<>());
+        for (ASTNode child : ifClause.getChildren()) {
+            if (child instanceof VariableAssignment) checkVariableAssignment((VariableAssignment) child);
+            if (child instanceof Declaration) checkDeclaration((Declaration) child);
+            if (child instanceof IfClause) checkIfClause((IfClause) child);
+        }
+        variableTypes.pop();
+
+        if (ifClause.elseClause != null) {
+            checkElseClause(ifClause.elseClause);
+        }
+    }
+
+    private void checkElseClause(ElseClause elseClause) {
+        // Nieuwe scope voor else-body
+        variableTypes.push(new HashMap<>());
+        for (ASTNode child : elseClause.getChildren()) {
+            if (child instanceof VariableAssignment) checkVariableAssignment((VariableAssignment) child);
+            if (child instanceof Declaration) checkDeclaration((Declaration) child);
+            if (child instanceof IfClause) checkIfClause((IfClause) child);
+        }
+        variableTypes.pop();
     }
 
     private ExpressionType getExpressionType(Expression expr) {
