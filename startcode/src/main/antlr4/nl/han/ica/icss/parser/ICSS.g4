@@ -46,26 +46,29 @@ ASSIGNMENT_OPERATOR: ':=';
 
 //--- PARSER: ---
 stylesheet: variableAssignment* stylerule+ ;
-stylerule : id_selector OPEN_BRACE (statement)* CLOSE_BRACE;
-id_selector : ID_IDENT| CLASS_IDENT| LOWER_IDENT;
-statement: declaration+ | ifClause;
-declaration : LOWER_IDENT COLON expression SEMICOLON;
-ifClause: IF BOX_BRACKET_OPEN expression BOX_BRACKET_CLOSE OPEN_BRACE statement+ CLOSE_BRACE (elseClause)?;
-elseClause: ELSE OPEN_BRACE statement+ CLOSE_BRACE;
+stylerule : selector OPEN_BRACE (declaration+ | ifClause)* CLOSE_BRACE;
+selector : tag_selector| class_selector | id_selector;
+tag_selector   : LOWER_IDENT ;
+class_selector : CLASS_IDENT ;
+id_selector : ID_IDENT ;
+declaration : property COLON expression SEMICOLON;
+property : LOWER_IDENT;
+ifClause: IF BOX_BRACKET_OPEN expression BOX_BRACKET_CLOSE OPEN_BRACE (declaration+ | ifClause)+ CLOSE_BRACE (elseClause)?;
+elseClause: ELSE OPEN_BRACE (declaration+ | ifClause)+ CLOSE_BRACE;
 expression
     : expression MUL expression       # MulExpr
     | expression PLUS expression      # AddExpr
     | expression MIN expression       # SubExpr
     | literal                         # LitExpr
-    | variableReference                # VarRefExpr
+    | variableReference               # VarRefExpr
     ;
 literal
     : PIXELSIZE                        # PixelLiteral
     | PERCENTAGE                       # PercentageLiteral
     | SCALAR                           # ScalarLiteral
     | COLOR                            # ColorLiteral
-    | TRUE                             # TrueLiteral
-    | FALSE                            # FalseLiteral
+    | TRUE                             # BoolLiteral
+    | FALSE                            # BoolLiteral
     ;
 variableAssignment: variableReference ASSIGNMENT_OPERATOR  expression SEMICOLON;
 variableReference:CAPITAL_IDENT;
