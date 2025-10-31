@@ -41,6 +41,13 @@ public class Checker {
             return;
         }
 
+        ExpressionType existingType = getTypeOfVariable(assignment.name.name);
+        if (existingType != ExpressionType.UNDEFINED && existingType != type) {
+            assignment.setError("Variabele '" + assignment.name.name + "' heeft type "
+                    + existingType + " en kan niet opnieuw toegewezen worden met type " + type);
+            return;
+        }
+
         variableTypes.peek().put(assignment.name.name, type);
     }
     private void checkStylerule(Stylerule rule) {
