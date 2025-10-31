@@ -72,6 +72,30 @@ public class ASTListener extends ICSSBaseListener {
 	}
 
 	@Override
+	public void enterTag_selector(ICSSParser.Tag_selectorContext ctx) {
+		TagSelector selector = new TagSelector(ctx.getText());
+		currentContainer.push(selector);
+	}
+
+	@Override
+	public void exitTag_selector(ICSSParser.Tag_selectorContext ctx) {
+		TagSelector selector = (TagSelector)currentContainer.pop();
+		currentContainer.peek().addChild(selector);
+	}
+
+	@Override
+	public void enterClass_selector(ICSSParser.Class_selectorContext ctx) {
+		ClassSelector selector = new ClassSelector(ctx.getText());
+		currentContainer.push(selector);
+	}
+
+	@Override
+	public void exitClass_selector(ICSSParser.Class_selectorContext ctx) {
+		ClassSelector selector = (ClassSelector) currentContainer.pop();
+		currentContainer.peek().addChild(selector);
+	}
+
+	@Override
 	public void enterDeclaration(ICSSParser.DeclarationContext ctx) {
 		Declaration declaration = new Declaration();
 		currentContainer.push(declaration);
@@ -93,6 +117,30 @@ public class ASTListener extends ICSSBaseListener {
 	public void exitProperty(ICSSParser.PropertyContext ctx) {
 		PropertyName property = (PropertyName)currentContainer.pop();
 		currentContainer.peek().addChild(property);
+	}
+
+	@Override
+	public void enterIfClause(ICSSParser.IfClauseContext ctx) {
+		IfClause ifc = new IfClause();
+		currentContainer.push(ifc);
+	}
+
+	@Override
+	public void exitIfClause(ICSSParser.IfClauseContext ctx) {
+		IfClause ifc = (IfClause)currentContainer.pop();
+		currentContainer.peek().addChild(ifc);
+	}
+
+	@Override
+	public void enterElseClause(ICSSParser.ElseClauseContext ctx) {
+		ElseClause elsec = new ElseClause();
+		currentContainer.push(elsec);
+	}
+
+	@Override
+	public void exitElseClause(ICSSParser.ElseClauseContext ctx) {
+		ElseClause elsec = (ElseClause)currentContainer.pop();
+		currentContainer.peek().addChild(elsec);
 	}
 
 	@Override
@@ -189,5 +237,29 @@ public class ASTListener extends ICSSBaseListener {
 	public void exitBoolLiteral(ICSSParser.BoolLiteralContext ctx) {
 		BoolLiteral bool = (BoolLiteral) currentContainer.pop();
 		currentContainer.peek().addChild(bool);
+	}
+
+	@Override
+	public void enterVariableAssignment(ICSSParser.VariableAssignmentContext ctx) {
+		VariableAssignment var = new VariableAssignment();
+		currentContainer.push(var);
+	}
+
+	@Override
+	public void exitVariableAssignment(ICSSParser.VariableAssignmentContext ctx) {
+		VariableAssignment var = (VariableAssignment) currentContainer.pop();
+		currentContainer.peek().addChild(var);
+	}
+
+	@Override
+	public void enterVariableReference(ICSSParser.VariableReferenceContext ctx) {
+		VariableReference var = new VariableReference(ctx.getText());
+		currentContainer.push(var);
+	}
+
+	@Override
+	public void exitVariableReference(ICSSParser.VariableReferenceContext ctx) {
+		VariableReference var = (VariableReference) currentContainer.pop();
+		currentContainer.peek().addChild(var);
 	}
 }
