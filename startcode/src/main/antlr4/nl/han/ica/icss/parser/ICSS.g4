@@ -46,15 +46,15 @@ ASSIGNMENT_OPERATOR: ':=';
 
 //--- PARSER: ---
 stylesheet: variableAssignment* stylerule+ ;
-stylerule : selector OPEN_BRACE (declaration+ | ifClause)* CLOSE_BRACE;
+stylerule : selector OPEN_BRACE (variableAssignment | declaration | ifClause)* CLOSE_BRACE;
 selector : tag_selector| class_selector | id_selector;
 tag_selector   : LOWER_IDENT ;
 class_selector : CLASS_IDENT ;
 id_selector : ID_IDENT ;
 declaration : property COLON expression SEMICOLON;
 property : LOWER_IDENT;
-ifClause: IF BOX_BRACKET_OPEN expression BOX_BRACKET_CLOSE OPEN_BRACE (declaration+ | ifClause)+ CLOSE_BRACE (elseClause)?;
-elseClause: ELSE OPEN_BRACE (declaration+ | ifClause)+ CLOSE_BRACE;
+ifClause: IF BOX_BRACKET_OPEN expression BOX_BRACKET_CLOSE OPEN_BRACE (variableAssignment | declaration | ifClause)+  CLOSE_BRACE (elseClause)?;
+elseClause: ELSE OPEN_BRACE (variableAssignment | declaration | ifClause)+  CLOSE_BRACE;
 expression
     : expression MUL expression       # MulExpr
     | expression PLUS expression      # AddExpr
